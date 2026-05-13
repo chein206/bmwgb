@@ -567,7 +567,7 @@ window.saveMarker=function(){
   const series=document.getElementById('mSeries').value;
   const trim=document.getElementById('mTrim').value;
   const manual=document.getElementById('mModel').value.trim();
-  const model=manual||trim||series;
+  const model=trim||series||manual;
   if(!model){alert('시리즈를 선택하거나 차종명을 입력하세요');return;}
   const autoType=series&&BMW_MODELS[series]?BMW_MODELS[series].type:'sedan';
   const cartype=document.querySelector('input[name="cartype"]:checked')?.value||'new';
