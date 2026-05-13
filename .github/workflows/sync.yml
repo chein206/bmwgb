@@ -14,14 +14,9 @@ jobs:
           git clone --depth 1 https://Girihara:${HF_TOKEN}@huggingface.co/spaces/Girihara/bmwgb hf_space
           cp index.html hf_space/index.html
           python3 -c "open('hf_space/README.md','w',newline='\n',encoding='utf-8').write('---\ntitle: BMW GB Board\nemoji: \U0001F697\ncolorFrom: blue\ncolorTo: blue\nsdk: static\npinned: false\n---\n')"
-          echo "=== README content ==="
-          cat hf_space/README.md
-          echo "=== README hex ==="
-          xxd hf_space/README.md | head -5
           cd hf_space
           git config user.email "github-actions@github.com"
           git config user.name "GitHub Actions"
           git add index.html README.md
-          git status
-          git commit -m "Sync $(date -u +%Y%m%d-%H%M%S)" || echo "Nothing to commit"
+          git commit --allow-empty -m "Sync $(date -u +%Y%m%dT%H%M%SZ)"
           git push
