@@ -15,11 +15,16 @@ jobs:
         run: |
           git config user.email "github-actions@github.com"
           git config user.name "GitHub Actions"
-          python3 -c "
-          content = '---\ntitle: BMW GB Board\nemoji: \U0001F697\ncolorFrom: blue\ncolorTo: blue\nsdk: static\npinned: false\n---\n'
-          with open('README.md', 'w', newline='\n', encoding='utf-8') as f:
-              f.write(content)
-          "
+          cat > README.md << 'EOF'
+          ---
+          title: BMW GB Board
+          emoji: 🚗
+          colorFrom: blue
+          colorTo: blue
+          sdk: static
+          pinned: false
+          ---
+          EOF
           git add README.md
           git diff --cached --quiet || git commit -m "Fix HF README"
           git push https://Girihara:${HF_TOKEN}@huggingface.co/spaces/Girihara/bmwgb main --force
