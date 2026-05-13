@@ -10,4 +10,4 @@ jobs:
         with:
           fetch-depth: 0
       - name: Push to HuggingFace
-        run: git push https://Girihara:${{ secrets.HF_TOKEN }}@huggingface.co/spaces/Girihara/bmwgb main
+        run: git push https://Girihara:${{ secrets.HF_TOKEN }}@huggingface.co/spaces/Girihara/bmwgb main --force
