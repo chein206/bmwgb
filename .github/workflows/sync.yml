@@ -7,16 +7,45 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Push to HuggingFace
+      - name: Install huggingface_hub
+        run: pip install huggingface_hub
+      - name: Push to HuggingFace via API
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          git clone --depth 1 https://Girihara:${HF_TOKEN}@huggingface.co/spaces/Girihara/bmwgb hf_space
-          cp index.html hf_space/index.html
-          python3 -c "open('hf_space/README.md','w',newline='\n',encoding='utf-8').write('---\ntitle: BMW GB Board\nemoji: \U0001F697\ncolorFrom: blue\ncolorTo: blue\nsdk: static\npinned: false\n---\n')"
-          cd hf_space
-          git config user.email "github-actions@github.com"
-          git config user.name "GitHub Actions"
-          git add index.html README.md
-          git commit --allow-empty -m "Sync $(date -u +%Y%m%dT%H%M%SZ)"
-          git push
+          python3 << 'PYEOF'
+          import os
+          from huggingface_hub import HfApi
+
+          api = HfApi(token=os.environ["HF_TOKEN"])
+          repo_id = "Girihara/bmwgb"
+
+          readme = (
+              "---\n"
+              "title: BMW GB Board\n"
+              "emoji: \U0001F697\n"
+              "colorFrom: blue\n"
+              "colorTo: blue\n"
+              "sdk: static\n"
+              "pinned: false\n"
+              "---\n"
+          )
+
+          api.upload_file(
+              path_or_fileobj=readme.encode("utf-8"),
+              path_in_repo="README.md",
+              repo_id=repo_id,
+              repo_type="space",
+              commit_message="Sync README",
+          )
+
+          api.upload_file(
+              path_or_fileobj="index.html",
+              path_in_repo="index.html",
+              repo_id=repo_id,
+              repo_type="space",
+              commit_message="Sync index.html",
+          )
+
+          print("Done!")
+          PYEOF
