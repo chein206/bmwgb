@@ -7,24 +7,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
       - name: Push to HuggingFace
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
+          git clone --depth 1 https://Girihara:${HF_TOKEN}@huggingface.co/spaces/Girihara/bmwgb hf_space
+          cp index.html hf_space/index.html
+          python3 -c "open('hf_space/README.md','w',newline='\n',encoding='utf-8').write('---\ntitle: BMW GB Board\nemoji: \U0001F697\ncolorFrom: blue\ncolorTo: blue\nsdk: static\npinned: false\n---\n')"
+          cd hf_space
           git config user.email "github-actions@github.com"
           git config user.name "GitHub Actions"
-          cat > README.md << 'EOF'
-          ---
-          title: BMW GB Board
-          emoji: 🚗
-          colorFrom: blue
-          colorTo: blue
-          sdk: static
-          pinned: false
-          ---
-          EOF
-          git add README.md
-          git diff --cached --quiet || git commit -m "Fix HF README"
-          git push https://Girihara:${HF_TOKEN}@huggingface.co/spaces/Girihara/bmwgb main --force
+          git add index.html README.md
+          git diff --cached --quiet && echo "No changes" && exit 0
+          git commit -m "Sync from GitHub"
+          git push
