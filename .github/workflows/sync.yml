@@ -10,4 +10,12 @@ jobs:
         with:
           fetch-depth: 0
       - name: Push to HuggingFace
-        run: git push https://Girihara:${{ secrets.HF_TOKEN }}@huggingface.co/spaces/Girihara/bmwgb main --force
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          git config user.email "github-actions@github.com"
+          git config user.name "GitHub Actions"
+          printf '---\ntitle: BMW GB Board\nemoji: \xf0\x9f\x9a\x97\ncolorFrom: blue\ncolorTo: blue\nsdk: static\npinned: false\n---\n' > README.md
+          git add README.md
+          git diff --cached --quiet || git commit -m "Fix HF README line endings"
+          git push https://Girihara:${HF_TOKEN}@huggingface.co/spaces/Girihara/bmwgb main --force
